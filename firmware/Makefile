@@ -5,6 +5,7 @@
 #   make flash                        build, then program and verify the LaunchPad, and run
 #   make MCU=msp430fr4131             build for the FR4131 instead (checks the code still fits)
 #   make GLASS=gdc04212               draw on the board's GDC04212 instead of the LaunchPad's glass
+#   make GLASS=maithoga               the alternative 12-pin glass (no colon; its middle decimal point blinks)
 #   make FAST=1 START=0058 flash      test build: count once a second, starting from 00:58
 #   make EX=msp430fr413x_LCDE_01      build one of TI's SLAC625 examples instead of src/
 #   make EX=msp430fr413x_LCDE_01 flash

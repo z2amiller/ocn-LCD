@@ -1,7 +1,8 @@
 # ocn-LCD firmware
 
 Firmware for the ocn-LCD board's MSP430FR4131 and its GDC04212 LCD. It counts minutes from power-up and
-shows HH:MM, freezing at 99:59. The colon blinks at 1 Hz from the LCD controller itself.
+shows HH:MM, freezing at 99:59. The colon blinks at 1 Hz from the LCD controller itself (on the alternative
+glass, which has no colon, the decimal point in its place blinks).
 
 Developed on TI's MSP-EXP430FR4133 LaunchPad, whose FR4133 is the board's FR4131 with more memory. The same
 code builds for both. The board build is 632 bytes; the FR4131 has 3,968 bytes of FRAM and 512 bytes of RAM.
@@ -55,6 +56,12 @@ shelf life. Lowering the crystal drive (`XT1DRIVE`) made no difference.
   netlist (COM1-COM4 on L0-L3, segment pins 5-12 on L8-L15, so digit n is LCDMEM[3 + n] and the colon is
   bit 3 of LCDMEM[5]). When it first runs on real glass, check the contrast (VLCD_6, 2.96 V) and any flicker
   (32 Hz frames).
+- `src/glass_maithoga.c`: an alternative glass for the same footprint, the 12-pin 4-digit TN panel sold on
+  AliExpress as "12PIN TN Positive 4-Digits Segment LCD Panel" (brand maithoga, 50.8 × 22.86 mm), from the
+  listing's drawing and pin table. Its pins line up with the GDC04212's, its glass is 4.4 mm longer at each end,
+  and its commons run in reverse (pin 1 is COM3), which the segment table absorbs. It has no colon, so the
+  decimal point between the hours and minutes blinks instead and the display reads 12.34. Not yet run on real
+  glass.
 - `src/glass_launchpad.c`: the LaunchPad's FH-1138P glass (SLAU595B Table 4), with HH:MM on characters A1
   to A4.
 - `tools/ppk.py`: drives a Nordic PPK2 as the supply and measures the current (see below).
@@ -79,6 +86,7 @@ Run these from this folder.
 ```
 make GLASS=gdc04212 MCU=msp430fr4131        # the board: its glass and its chip
 make GLASS=gdc04212 MCU=msp430fr4131 flash  # build, program, verify, hard reset
+make GLASS=maithoga MCU=msp430fr4131 flash  # the board with the alternative glass
 make                              # the LaunchPad: FR4133 and its own glass
 make flash                        # build, program the LaunchPad, verify, hard reset
 make cycle                        # PPK2 power off and on: the clean start the chip needs after flashing
