@@ -11,7 +11,8 @@ down a few seconds later; the next time the magnet comes off, counting starts ag
 The renders leave out the LCD (on the back), the coin-cell holder and the reed switch, which have no
 3D models.
 
-Status: revision 0.1, not yet built. Firmware will be added to this repository.
+Status: revision 0.1, not yet built. The firmware is in [firmware/](firmware/): it runs on TI's
+MSP430FR4133 LaunchPad, and its driver for this board's LCD hasn't been tried on real glass yet.
 
 ## How it works
 
@@ -31,7 +32,9 @@ Status: revision 0.1, not yet built. Firmware will be added to this repository.
 ## Power budget
 
 Estimates at 3.0 V and 25 °C, from the TI datasheet (SLAS865) and the part specs. They will be
-replaced by measurements once the firmware is in.
+replaced by measurements on the board. Until then, the firmware's
+[measurements on the LaunchPad](firmware/README.md#measured-on-the-launchpad) are the nearest guide:
+2.2 µA asleep with its much larger LCD.
 
 | Item | Counting (magnet away) | Off (magnet in place) | Basis |
 |---|---|---|---|
@@ -129,7 +132,9 @@ signals plus the MCU's serial port.
    view, so its RXD carries data into this board's RX.
 
 4. **Flash the firmware** with TI UniFlash or Code Composer Studio. Select the MSP430FR4131 and the
-   LaunchPad's eZ-FET as the connection. A command-line recipe will come with the firmware.
+   LaunchPad's eZ-FET as the connection. Or, with msp430-gcc and DSLite installed (see
+   [firmware/README.md](firmware/README.md)), run `make GLASS=gdc04212 MCU=msp430fr4131 flash` in
+   `firmware/`.
 5. **Unplug the LaunchPad before measuring current or fitting the cell.** The programming and
    serial lines draw current of their own.
 
@@ -143,11 +148,16 @@ current meter across its pads. TP3 is a test pad on the switched 3 V supply.
 - `lib/`: the board's own symbols and footprints: the MSP430FR413x, the GDC04212 and its footprint,
   the coin-cell holder and the reed switch. The project's library tables point at this folder, so the
   project opens without any other library installed.
+- `firmware/`: the MCU's firmware, in C for msp430-gcc, with its own README covering how it works, how
+  to build and flash it, and the current measurements.
 
 ## License
 
-Licensed under the **CERN Open Hardware Licence Version 2 – Permissive**
-(CERN-OHL-P v2). See [LICENSE](LICENSE) and [NOTICE](NOTICE).
+The board (everything outside `firmware/`) is licensed under the **CERN Open Hardware Licence
+Version 2 – Permissive** (CERN-OHL-P v2). See [LICENSE](LICENSE) and [NOTICE](NOTICE).
 
 You may make, modify, and sell boards from these files, with no obligation to
 publish your changes.
+
+The firmware in `firmware/` is licensed under the **MIT License**; see
+[firmware/LICENSE](firmware/LICENSE). It is just as permissive, in the form usual for software.

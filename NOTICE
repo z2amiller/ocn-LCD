@@ -11,6 +11,9 @@ This documentation is distributed WITHOUT ANY EXPRESS OR IMPLIED WARRANTY,
 INCLUDING OF MERCHANTABILITY, SATISFACTORY QUALITY AND FITNESS FOR A
 PARTICULAR PURPOSE. Please see the CERN-OHL-P v2 for applicable conditions.
 
+The firmware in firmware/ is not covered by the CERN-OHL-P v2. It is
+licensed under the MIT License; see firmware/LICENSE.
+
 
 ORIGIN
 ------
@@ -19,4 +22,6 @@ The schematic, PCB layout, and the symbols and footprints in lib/ are
 original work. The footprints follow the manufacturers' published drawings
 (Littelfuse 59170, Lian Xin BS-CR2032-8, Good Display GDC04212) and the
 MSP430FR413x pinout follows TI datasheet SLAS865; they contain no
-third-party design files.
+third-party design files. The firmware is original work, written from TI's
+datasheet and user's guides (SLAS865, SLAU445, SLAU595) and Good Display's
+GDC04212 specification; it includes no third-party code.
