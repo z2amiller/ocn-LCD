@@ -8,10 +8,16 @@ wake spikes with their times, and ends with the average over the whole run.
 
     .venv/bin/python tools/ppk.py --seconds 130            # measure for 130 s
     .venv/bin/python tools/ppk.py --cycle 3 --seconds 130  # power off 3 s first: the magnet coming off
+    .venv/bin/python tools/ppk.py --ampere --seconds 125 --csv run.csv  # in line with the board's cell, logged
 
 Wiring on the LaunchPad: pull every J101 jumper except GND, SBW RST and SBW TST; PPK2 VOUT to the
 target-side 3V3 pin, GND to GND. Run it at 3.3 V (`--volts 3.3`, as the Makefile does) so the Spy-Bi-Wire
 lines, which idle at the programmer's 3.3 V, don't feed the chip.
+
+On the board, with its own cell: lift R2, PPK2 VIN to R2's cell-side pad, VOUT to the other pad, GND to GND,
+and nothing on J1. `--ampere` measures in line instead of supplying it; --volts is then the cell's voltage,
+which the calibration needs. --cycle disconnects the cell, but the hold-up capacitors sit after the magnet
+switch, so it takes a few seconds off to reset the board.
 
 ppk2-api supplies the serial protocol and the PPK2's calibration, but decodes one sample at a time in
 Python, which can't keep up with 400 kB/s: the port overflows and the 4-byte framing slips. This decodes
@@ -54,6 +60,10 @@ def main() -> int:
                     help="current that counts as a wake spike, in uA (default 50)")
     ap.add_argument("--quiet", action="store_true", help="skip the once-a-second lines")
     ap.add_argument("--off", action="store_true", help="leave the supply off at the end")
+    ap.add_argument("--ampere", action="store_true",
+                    help="ampere-meter mode: measure in line with the board's own cell (VIN) instead of supplying it")
+    ap.add_argument("--csv", help="write 1 ms bins (time, then mean, min and max in uA) to this CSV file")
+    ap.add_argument("--raw", help="save every sample (uA, float32, 100,000 a second) to this .npy file")
     args = ap.parse_args()
 
     port = args.port
@@ -67,21 +77,28 @@ def main() -> int:
     ppk = PPK2_API(port, timeout=1, write_timeout=1, exclusive=True)
     ppk.get_modifiers()
     cal = calibration(ppk)
-    ppk.set_source_voltage(int(round(args.volts * 1000)))
-    ppk.use_source_meter()
+    if args.ampere:
+        ppk.use_ampere_meter()                 # before anything else, so VOUT is never driven against the cell
+        ppk.set_source_voltage(int(round(args.volts * 1000)))
+    else:
+        ppk.set_source_voltage(int(round(args.volts * 1000)))
+        ppk.use_source_meter()
 
     if args.cycle > 0:
         ppk.toggle_DUT_power("OFF")
         print(f"supply off for {args.cycle:g} s")
         time.sleep(args.cycle)
     ppk.toggle_DUT_power("ON")
-    print(f"supply on at {args.volts:g} V, port {port}")
+    if args.ampere:
+        print(f"cell connected through the PPK2 (calibrated for {args.volts:g} V), port {port}")
+    else:
+        print(f"supply on at {args.volts:g} V, port {port}")
     ppk.start_measuring()
 
     leftover = b""
     chunks = []                                # one float32 array per read, kept for the spike scan
+    pending = np.zeros(0, np.float32)          # samples not yet in a once-a-second line
     sec_report = 1
-    seen = 0
     t0 = time.monotonic()
     try:
         while time.monotonic() - t0 < args.seconds:
@@ -93,11 +110,11 @@ def main() -> int:
             leftover = data[cut:]
             ua = decode(np.frombuffer(data[:cut], dtype="<u4"), cal, args.volts, ppk.adc_mult).astype(np.float32)
             chunks.append(ua)
-            seen += len(ua)
             if not args.quiet:
-                while seen >= sec_report * RATE:
-                    allv = np.concatenate(chunks)
-                    s = allv[int((sec_report - 1) * RATE):int(sec_report * RATE)]
+                # Only the current second is buffered, so long runs don't re-join everything once a second.
+                pending = np.concatenate((pending, ua))
+                while len(pending) >= RATE:
+                    s, pending = pending[:int(RATE)], pending[int(RATE):]
                     print(f"{sec_report:6d} s  avg {s.mean():10.2f} uA  peak {s.max():10.1f} uA")
                     sec_report += 1
     finally:
@@ -110,6 +127,15 @@ def main() -> int:
     print(f"samples: {len(allv)} ({len(allv) / RATE:.1f} s of data in {args.seconds:g} s)")
     if not len(allv):
         return 1
+    if args.csv:
+        n = len(allv) // 100
+        b = allv[:n * 100].reshape(n, 100)
+        np.savetxt(args.csv, np.column_stack((np.arange(n) / 1000, b.mean(1), b.min(1), b.max(1))),
+                   fmt="%.3f", delimiter=",", header="t_s,mean_ua,min_ua,max_ua", comments="")
+        print(f"wrote {n} 1 ms bins to {args.csv}")
+    if args.raw:
+        np.save(args.raw, allv)
+        print(f"wrote {len(allv)} samples to {args.raw}")
 
     # Wake spikes: runs of samples over the threshold, merging runs less than 2 ms apart.
     over = np.flatnonzero(allv >= args.spike_ua)
