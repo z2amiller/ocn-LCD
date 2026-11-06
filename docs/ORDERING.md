@@ -45,19 +45,32 @@ still at their defaults.
 
 ![PCB Assembly options](ordering/05-pcb-assembly.png)
 
-## 5. Overview
+## 5. Optional: approve JLC's work before they build
+
+Two options make JLC wait for your approval before going ahead. Both are off by default.
+
+- **Confirm Production file**, under *High-spec Options* in step 3. JLC sends you the board files
+  after its engineers have processed them, and you approve them before the board is made.
+- **Confirm Parts Placement**, under the assembly options in step 4. JLC's engineers check where and
+  which way round each part sits, and send you a picture to approve before assembly.
+
+Together they add about $1.50, plus however long you take to reply. The total in step 10 includes
+both. The author leaves them off for these files, because they're already checked and step 9 shows
+the placement anyway. They're worth turning on if you've changed the board.
+
+## 6. Overview
 
 The next page is a summary. Click **Next**.
 
 ![Overview page](ordering/06-overview.png)
 
-## 6. Upload the BOM and placement files
+## 7. Upload the BOM and placement files
 
 Add `BOM-ocn-LCD.csv` and `CPL-ocn-LCD.csv`, then click **Process BOM & CPL**.
 
 ![Add BOM and CPL files](ordering/07-upload-bom-cpl.png)
 
-## 7. Check the parts
+## 8. Check the parts
 
 All 12 lines should be matched, in stock and ticked. If a part is out of stock, find a replacement
 on JLC's main parts search, which works better than the search on this page.
@@ -67,14 +80,14 @@ your order they will come from JLCPCB.
 
 ![Matched parts](ordering/08-check-parts.png)
 
-## 8. Check the placement
+## 9. Check the placement
 
 Look over the preview for parts at the wrong angle, especially the transistor (Q1) and the
 microcontroller (U1). To fix one, select it and press Space to turn it 90°.
 
 ![Placement preview](ordering/09-check-placement.png)
 
-## 9. Save to cart
+## 10. Save to cart
 
 The last page shows the total. You may need to choose a product description before it lets you save.
 "Sensors → Clock" works. Then **Save to Cart** and check out as usual.
