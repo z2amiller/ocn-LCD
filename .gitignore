@@ -39,3 +39,7 @@ fp-info-cache
 
 # kicad-jlcpcb-tools schematic backups
 jlcpcb/*.zip
+
+# Python bytecode (firmware tools)
+__pycache__/
+*.py[co]
