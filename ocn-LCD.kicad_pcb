@@ -9,7 +9,7 @@
 	(paper "A4")
 	(title_block
 		(title "Cozzie")
-		(rev "0.1")
+		(rev "0.2")
 	)
 	(layers
 		(0 "F.Cu" signal)
@@ -5700,6 +5700,17 @@
 		(layer "B.SilkS")
 		(uuid "231de570-7a8f-4757-a5b9-e3ed70d78305")
 	)
+	(gr_rect
+		(start 130.5 127.25)
+		(end 138.5 135.25)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(fill yes)
+		(layer "B.SilkS")
+		(uuid "e2d9981a-0bac-43eb-9949-c08baaf6c388")
+	)
 	(gr_arc
 		(start 129 73.5)
 		(mid 129.732233 71.732233)
@@ -6381,7 +6392,7 @@
 		(uuid "6422ae6b-0e00-4887-aba2-d59449ad588f")
 	)
 	(via
-		(at 137 133.5)
+		(at 141.75 133.5)
 		(size 0.6)
 		(drill 0.3)
 		(layers "F.Cu" "B.Cu")

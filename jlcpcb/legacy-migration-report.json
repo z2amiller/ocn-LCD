@@ -871,7 +871,14 @@
         }
       ],
       "override_messages": [],
-      "known_override_messages": []
+      "known_override_messages": [],
+      "retention_notices": {
+        "ocn-LCD.kicad_pcb": {
+          "current_messages": [],
+          "known_messages": []
+        }
+      },
+      "retired": true
     }
   ]
 }
