@@ -92,7 +92,7 @@ The switch lets go only once the magnet is a few centimeters away (the same mode
 | BT1 | Lian Xin BS-CR2032-8 coin-cell holder, for a CR2032 | C7498149 |
 | SW1 | Littelfuse 59170-1-S-00-D reed switch, normally open, 10–15 AT | C315909 |
 | Q1 | AO3401A P-channel MOSFET, SOT-23 | C15127 |
-| Y1 | 32.768 kHz crystal, 3215, 12.5 pF | C32346 |
+| Y1 | TKD SF32WK32768D31T002 32.768 kHz crystal, 3215, 12.5 pF (any 3215 12.5 pF crystal fits) | C271654 |
 
 Every part in the BOM carries its LCSC number. The LCD, J1 and TP3 are left out of the BOM and the
 placement file. The passives are 0603 and 1206.
