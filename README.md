@@ -97,6 +97,11 @@ The switch lets go only once the magnet is a few centimeters away (the same mode
 Every part in the BOM carries its LCSC number. The LCD, J1 and TP3 are left out of the BOM and the
 placement file. The passives are 0603 and 1206.
 
+## Ordering
+
+JLCPCB can make the board and fit all the surface-mount parts. [docs/ORDERING.md](docs/ORDERING.md)
+walks through the order, screen by screen.
+
 ## Assembly
 
 1. **Surface-mount parts first, all on the front.** A stencil helps with the 0.5 mm pitch MCU. The
@@ -150,6 +155,8 @@ current meter across its pads. TP3 is a test pad on the switched 3 V supply.
   project opens without any other library installed.
 - `firmware/`: the MCU's firmware, in C for msp430-gcc, with its own README covering how it works, how
   to build and flash it, and the current measurements.
+- `GERBER-ocn-LCD.zip` and `jlcpcb/production_files/` (BOM and CPL): the JLCPCB fabrication and
+  assembly files. [docs/ORDERING.md](docs/ORDERING.md) explains how to use them.
 
 ## License
 
